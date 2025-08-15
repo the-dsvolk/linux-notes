@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""
+Simple Stream Monitor
+
+Usage: command | monitor_simple.py <column> <count> <threshold>
+Example: vmstat 1 | monitor_simple.py 7 5 200
+"""
+
+data = """
+procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu----
+5 4 0 554724 1698688 32809648 200 0 0 1439 3177 10347 30 1 51 18 0
+5 4 0 556532 1698688 32809712 200 0 0 1304 3168 6853 31 1 58 11 0
+5 4 0 517944 1698696 32809792 0 0 0 1360 3345 10589 31 1 53 15 0
+procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu----
+6 4 0 477476 1698748 32836968 300 0 4 1459 3819 20150 39 2 42 17 0
+7 5 0 455123 1698800 32837000 350 0 6 1500 3900 21000 40 3 41 16 0
+8 6 0 432567 1698850 32837100 400 0 8 1600 4000 22000 41 4 40 15 0
+9 7 0 410234 1698900 32837200 450 0 10 1700 4100 23000 42 5 39 14 0
+10 8 0 387901 1698950 32837300 500 0 12 1800 4200 24000 43 6 38 13 0
+11 9 0 365568 1699000 32837400 100 0 14 1900 4300 25000 44 7 37 12 012 10 0 343235 1699050 32837500 50 0 16 2000 4400 26000 45 8 36 11 0
+
+"""
+
+
+import sys
+
+# Get arguments
+column = int(sys.argv[1]) - 1  # Convert to 0-based index
+max_count = int(sys.argv[2])
+threshold = float(sys.argv[3])
+
+violations = 0
+
+for line in data.strip().split('\n'):
+    line = line.strip()
+    
+    # Skip empty lines and headers
+    if not line or not line[0].isdigit():
+        continue
+    
+    # Get column value
+    cols = line.split()
+    value = float(cols[column])
+
+    # Check threshold
+    if value > threshold:
+        violations += 1
+        if violations >= max_count:
+            print(f"ALERT: Column {column+1} = {value} (exceeded {threshold} for {violations} times)")
+    else:
+        violations = 0
