@@ -143,6 +143,10 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
 - **in**: Interrupts per second
 - **cs**: Context switches per second
 
+**Interrupts** are hardware signals that notify the CPU of events requiring immediate attention, such as disk I/O completion, network packet arrival, or timer events. High interrupt rates may indicate heavy I/O activity or hardware issues.
+
+**Context switching** occurs when the CPU switches from executing one process to another, saving the current process state and loading the new process state. Excessive context switching can indicate system overload, too many competing processes, or inefficient application design. For example, a poorly designed application that creates hundreds of threads competing for CPU time, or a system with insufficient CPU cores running too many processes simultaneously, can cause context switch rates to spike above 10,000 per second.
+
 #### CPU Fields (percentages)
 - **us**: User time (time spent running user processes)
 - **sy**: System time (time spent in kernel)
